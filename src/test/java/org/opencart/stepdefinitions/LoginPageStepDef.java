@@ -9,7 +9,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.opencart.pages.LoginPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
@@ -17,12 +16,15 @@ public class LoginPageStepDef {
     private WebDriver driver;
     private LoginPage loginPage;
     private static String OPEN_CART_LOGIN_PAGE = "https://naveenautomationlabs.com/opencart/index.php?route=account/login";
-    private String email = "asingh.25aug@yahoo.in";
+    private String email = "asingh.25@yahoo.in";
     private String password = "test@12345";
 
     @Before
     public void setup() {
-        WebDriverManager.chromedriver().browserVersion("139").setup();
+        WebDriverManager.chromedriver()
+                .clearDriverCache()
+                .forceDownload()
+                .setup();
         driver = new ChromeDriver();
     }
 
@@ -37,16 +39,17 @@ public class LoginPageStepDef {
     public void i_am_on_the_open_cart_login_page() {
         driver.get(OPEN_CART_LOGIN_PAGE);
         loginPage = new LoginPage(driver);
+
     }
 
     @Given("I have entered a valid username and password")
-    public void i_have_entered_a_valid_username_and_password() {
+    public void i_have_entered_a_valid_username_and_password() throws InterruptedException {
         loginPage.enterEmail(email);
         loginPage.enterPassword(password);
     }
 
     @Given("I have entered invalid {string} and {string}")
-    public void i_have_entered_invalid_and(String username, String password) {
+    public void i_have_entered_invalid_and(String username, String password) throws InterruptedException {
         loginPage.enterEmail(username);
         loginPage.enterPassword(password);
     }
@@ -61,23 +64,23 @@ public class LoginPageStepDef {
         Assert.assertEquals(loginPage.checkLogoutLink(), true);
     }
 
-    @Then("I should see an error message indicating {string}")
-    public void i_should_see_an_error_message_indicating(String string) {
-        WebElement alertMessage = driver.findElement(By.cssSelector("alert alert-danger alert-dismissible"));
-        boolean isAlertMessageFound = alertMessage.isDisplayed();
-        Assert.assertEquals(isAlertMessageFound,true);
 
+    @Then("I should see an error message indicating {string}")
+    public void i_should_see_an_error_message_indicating(String errorMessage) throws InterruptedException {
+        // Assert that an error message is displayed on the page matching the expected error message
+        Thread.sleep(2000);
+        Assert.assertEquals(driver.findElement(By.cssSelector(".alert-danger")).isDisplayed(), true);
     }
 
     @When("I click on the \"Forgotten Password\" link")
-    public void i_click_on_the_link(String forgetPassword) {
-        loginPage.checkForgetPasswordLink();
+    public void i_click_on_the_forgotten_password_link() {
+        loginPage.clickForgottenPasswordLink();
     }
 
     @Then("I should be redirected to the password reset page")
     public void i_should_be_redirected_to_the_password_reset_page() {
-        boolean isForgettenLinkContains = loginPage.goForgetPwdPageUrl().contains("account/forgetten");
-        Assert.assertTrue(isForgettenLinkContains);
+        // Assert that the current URL contains the password reset page route
+        Assert.assertTrue(loginPage.getForgotPwdPageUrl().contains("account/forgotten"));
     }
-
 }
+

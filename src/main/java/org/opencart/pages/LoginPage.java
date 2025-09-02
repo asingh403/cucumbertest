@@ -1,44 +1,40 @@
 package org.opencart.pages;
 
+//import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class LoginPage {
+
     private WebDriver driver;
 
-    private By emailInputLocator = By.xpath("//input[name='email']");
+    // Locators
+    private By emailInputLocator = By.name("email");
     private By passwordInputLocator = By.name("password");
     private By loginButtonLocator = By.xpath("//input[@type='submit']");
-    private By forgetPasswordLinkLocator = By.linkText("Forgotten Password");
-    private By logoutLinkLocator = By.linkText("logout");
+    private By forgottenPasswordLinkLocator = By.linkText("Forgotten Password");
+    private By logoutLinkLocator = By.linkText("Logout");
 
-    /**
-     * Created Constructor
-     */
 
+    // Constructor
     public LoginPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void enterEmail(String email) {
+    // Methods
+    public void enterEmail(String email) throws InterruptedException {
         WebElement emailInput = driver.findElement(emailInputLocator);
+        emailInput.click();
+        Thread.sleep(1000);
         emailInput.sendKeys(email);
     }
 
-    public void enterPassword(String password) {
+    public void enterPassword(String password) throws InterruptedException{
         WebElement passwordInput = driver.findElement(passwordInputLocator);
+        passwordInput.click();
+        Thread.sleep(1000);
         passwordInput.sendKeys(password);
-    }
-
-    public boolean checkForgetPasswordLink() {
-        WebElement isLinkFound = driver.findElement(forgetPasswordLinkLocator);
-        return isLinkFound.isDisplayed();
-    }
-
-    public boolean checkLogoutLink() {
-        WebElement isLogoutLinkFound = driver.findElement(logoutLinkLocator);
-        return isLogoutLinkFound.isDisplayed();
     }
 
     public void clickLoginButton() {
@@ -46,22 +42,29 @@ public class LoginPage {
         loginButton.click();
     }
 
-    public void login(String username, String password) {
-        WebElement emailInput = driver.findElement(emailInputLocator);
-        WebElement passwordInput = driver.findElement(passwordInputLocator);
+    public void clickForgottenPasswordLink() {
+        WebElement forgottenPasswordLink = driver.findElement(forgottenPasswordLinkLocator);
+        forgottenPasswordLink.click();
+    }
 
-        emailInput.sendKeys(username);
-        passwordInput.sendKeys(password);
+    public boolean checkForgotPwdLink(){
+        return driver.findElement(forgottenPasswordLinkLocator).isDisplayed();
+    }
+
+    public boolean checkLogoutLink(){
+        return driver.findElement(logoutLinkLocator).isDisplayed();
+    }
+
+    public void login(String email, String password) throws InterruptedException {
+        enterEmail(email);
+        enterPassword(password);
         clickLoginButton();
     }
 
-    public String getForgetPasswordLink() {
-        WebElement forgetPassword = driver.findElement(forgetPasswordLinkLocator);
-        return forgetPassword.getText();
+    public String getForgotPwdPageUrl(){
+        String forgotPwdPageUrl = driver.getCurrentUrl();
+        return forgotPwdPageUrl;
     }
 
-    public String goForgetPwdPageUrl(){
-        String forgetPwdUrl=driver.getCurrentUrl();
-        return forgetPwdUrl;
-    }
+
 }

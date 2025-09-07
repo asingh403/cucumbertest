@@ -6,7 +6,8 @@ import io.cucumber.testng.CucumberOptions;
 import org.junit.runner.RunWith;
 import org.testng.annotations.DataProvider;
 
-@CucumberOptions(features = "src/test/resources/features",
+@CucumberOptions(
+        features = "src/test/resources/features",
         glue = "org.opencart.stepdefinitions",
         plugin = {
                 "pretty",
@@ -16,7 +17,7 @@ import org.testng.annotations.DataProvider;
                 "rerun:target/rerun.txt",
                 "timeline:target/timeline"
         },
-        tags = "@smoke",
+        tags = "@regression",
         monochrome = true,
         publish = true,
         dryRun = false,
@@ -26,6 +27,7 @@ public class TestRunner extends AbstractTestNGCucumberTests {
     @Override
     @DataProvider(parallel = true)
     public Object[][] scenarios(){
+
         return super.scenarios();
     }
 }
